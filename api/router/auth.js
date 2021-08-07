@@ -20,12 +20,11 @@ router.post('/login', login = (req, res) => {
     if (passwords == admin.password && username == admin.usename) {
         const acces_token = jwt.sign({
             username: admin.usename,
-            email : admin.email
-        } , 'sdfd234s234f324dsf324sdfsd234fsdfw23432er')
+            email: admin.email
+        }, 'sdfd234s234f324dsf324sdfsd234fsdfw23432er')
 
-        
-        res.setHeader("Access-Token", acces_token);
-        res.send(acces_token);
+
+        res.header("auth-token", acces_token).send(acces_token);
 
 
     } else {
@@ -34,11 +33,19 @@ router.post('/login', login = (req, res) => {
 })
 
 function verify(req, res, next) {
-    if (2 + 2 == 5) {
-        next()
-    } else {
-        res.status(401).send('no assess')
+    
+    const token = req.header('auth-token');
+    
+    if(!token) return res.status(400).send("access denied");
+
+    try {
+        const verified = jwt.verify(token , 'sdfd234s234f324dsf324sdfsd234fsdfw23432er');
+        req.user = verified;
+    } catch (error) {
+        res.status(400).send('Invalid Token')
     }
+
+    next()
 }
 
 
