@@ -6,7 +6,9 @@ const auth = require('./router/auth')
 app.use(express.json());
 
 app.get('/' , ( req , res ) => {
-    res.send(' JWT access and refresh token ');
+    res.json({
+        "title" : "jwt access and refresh token"
+    });
 });
 
 app.use('/user' , auth);

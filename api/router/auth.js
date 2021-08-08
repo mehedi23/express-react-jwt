@@ -8,8 +8,16 @@ let admin = {
     email: 'mehedi@email.com',
 };
 
+let secret_token = 'sdfd234s234f324dsf324sdfsd234fsdfw23432er';
+let secret_token_2 = 'sdfd234s234f324dsf324sdfsd234fsdfw23432er';
+
+// let refresh_token_copy = []
+
 router.get('/dashboard', verify, (req, res) => {
-    res.send('this is dashboard');
+    res.send({
+        title : 'You r log in' ,
+        img : 'https://thumbs.gfycat.com/UnripeThoroughHalibut-max-1mb.gif'
+    });
 });
 
 router.post('/login', login = (req, res) => {
@@ -18,35 +26,66 @@ router.post('/login', login = (req, res) => {
 
 
     if (passwords == admin.password && username == admin.usename) {
-        const acces_token = jwt.sign({
+
+        let the_user = {
             username: admin.usename,
             email: admin.email
-        }, 'sdfd234s234f324dsf324sdfsd234fsdfw23432er')
+        };
 
+        const acces_token = access_token_genaret(the_user)
+        const refresh_token = jwt.sign(the_user, secret_token, {
+            expiresIn: '60s'
+        });
 
-        res.header("auth-token", acces_token).send(acces_token);
+        refresh_token_copy.push(refresh_token)
 
+        let token_obj = {
+            "auth-token": acces_token,
+            "refresh-token": refresh_token,
+        };
+
+        res.header(token_obj).send("send token");
 
     } else {
         res.status(401).send('You are fake');
     };
-})
+});
+
+// router.post('/token', (req, res) => {
+//     const ref_token = req.body.refToken;
+//     if (!ref_token) res.status(400).send("no ref token");
+//     if (!ref_token.includes(refresh_token_copy)) res.status(403).send("no more user");
+
+//     const some = jwt.verify(ref_token, secret_token)
+
+//     let the_user = {
+//         username: some.usename,
+//         email: some.email
+//     };
+//     const newToken = access_token_genaret(the_user)
+//     res.send(newToken)
+// })
+
+function access_token_genaret(the_user) {
+    return jwt.sign(the_user, secret_token, {
+        expiresIn: '20s'
+    })
+}
 
 function verify(req, res, next) {
-    
     const token = req.header('auth-token');
-    
-    if(!token) return res.status(400).send("access denied");
+
+    if (!token) return res.status(400).send("access denied");
 
     try {
-        const verified = jwt.verify(token , 'sdfd234s234f324dsf324sdfsd234fsdfw23432er');
+        const verified = jwt.verify(token, secret_token);
         req.user = verified;
+        next()
     } catch (error) {
         res.status(400).send('Invalid Token')
     }
 
-    next()
-}
+};
 
 
 module.exports = router;

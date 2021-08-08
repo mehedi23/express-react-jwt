@@ -1,23 +1,17 @@
-import logo from './logo.svg';
+import React  from 'react'
 import './App.css';
+import Auth from './component/auth'
+import Dashboard from './component/Dashboard';
 
-function App() {
+const App = () => {
+
+  let get_token = JSON.parse(localStorage.getItem('get_token'));
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Auth/>
+
+      <Dashboard tok={get_token.access} refr={get_token.refresh}/>
     </div>
   );
 }
