@@ -34,6 +34,8 @@ const Auth = () => {
 
             localStorage.setItem( "get_token" , JSON.stringify(get_token))
 
+            console.log(res)
+
         })
         .catch(function (error) {
             console.log(error);
