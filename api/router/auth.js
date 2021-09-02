@@ -24,6 +24,8 @@ router.post('/login', login = (req, res) => {
     let username = req.body.username;
     let passwords = req.body.password;
 
+    console.log(passwords , username)
+
 
     if (passwords == admin.password && username == admin.usename) {
 
